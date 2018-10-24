@@ -14,6 +14,8 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
+import cn.tedu.mybatis.beans.Dept;
+import cn.tedu.mybatis.beans.Grade;
 import cn.tedu.mybatis.beans.User;
 
 
@@ -82,5 +84,84 @@ public class MybatisTest {
 		List<User> list = session.selectList("cn.tedu.mybatis.beans.UserMapper.queryAllOrder",map);
 		//5.遍历结果
 		System.out.println(Arrays.toString(list.toArray()));
+	}
+	@Test
+	public void test06() throws IOException{
+		User user = new User();
+		user.setId(3);
+//		user.setName("yyy");
+		user.setAge(33);
+		//3.创建sqlSession
+		SqlSession session = factory.openSession();
+		//4.执行操作
+		session.update("cn.tedu.mybatis.beans.UserMapper.updateOne",user);
+		//5.提交事务
+		session.commit();
+	}
+	@Test
+	public void test07() throws IOException{
+		User user = new User();
+		user.setId(3);
+//		user.setName("yyy");
+//		user.setAge(33);
+		//3.创建sqlSession
+		SqlSession session = factory.openSession();
+		//4.执行操作
+		User userx = session.selectOne("cn.tedu.mybatis.beans.UserMapper.queryMany",user);
+		//5.查看结果
+		System.out.println(userx);
+	}
+	@Test
+	public void test08() throws IOException{
+		User user = new User();
+//		user.setId(3);
+		user.setName("xxx");
+//		user.setAge(33);
+		//3.创建sqlSession
+		SqlSession session = factory.openSession();
+		//4.执行操作
+		session.insert("cn.tedu.mybatis.beans.UserMapper.insertOne",user);
+		//5.提交事务
+		session.commit();
+	}
+	@Test
+	public void test09() throws IOException{
+		User user = new User();
+//		user.setId(12);
+//		user.setName("xxx");
+		user.setAge(33);
+		//3.创建sqlSession
+		SqlSession session = factory.openSession();
+		//4.执行操作
+		session.delete("cn.tedu.mybatis.beans.UserMapper.deleteOne",user);
+		//5.提交事务
+		session.commit();
+	}
+	@Test
+	public void test10() throws IOException{
+		//3.创建sqlSession
+		SqlSession session = factory.openSession();
+		//4.执行操作
+		List<User> list = session.selectList("cn.tedu.mybatis.beans.UserMapper.queryByMapping");
+		//5.遍历结果
+		System.out.println(list);
+	}
+	@Test
+	public void test11() throws IOException{
+		//3.创建sqlSession
+		SqlSession session = factory.openSession();
+		//4.执行操作
+		List<Grade> list = session.selectList("cn.tedu.mybatis.beans.UserMapper.queryo2o");
+		//5.遍历结果
+		System.out.println(list);
+	}
+	@Test
+	public void test12() throws IOException{
+		//3.创建sqlSession
+		SqlSession session = factory.openSession();
+		//4.执行操作
+		List<Dept> list = session.selectList("cn.tedu.mybatis.beans.UserMapper.queryo2m");
+		//5.遍历结果
+		System.out.println(list);
 	}
 }

@@ -18,4 +18,125 @@
  <select id="queryAllOrder" resultType="Alias_User">
   select * from user order by ${cname};
  </select>
+ <update id="updateOne">
+  update user
+  <set>
+   <if test="name != null">name = #{name},</if>
+   <if test="age != 0">age = #{age},</if>
+  </set>
+  where id=#{id};
+ </update>
+ <select id="queryMany" resultType="Alias_User">
+  select * from user
+  <where>
+   <if test="id != 0">id=#{id}</if>
+   <if test="name != null">and name=#{name}</if>
+   <if test="age != 0">and age=#{age}</if>
+  </where>
+ </select>
+<insert id="insertOne">
+ insert into user
+ <trim prefix="(" suffix=")" suffixOverrides=",">
+  id,
+  <if test="name != null">name,</if>
+  <if test="age != 0">age,</if>
+ </trim>
+ values
+ <trim prefix="(" suffix=")" suffixOverrides=",">
+  id,
+  <if test="name != null">#{name},</if>
+  <if test="age != 0">#{age},</if>
+ </trim>
+</insert> 
+<delete id="deleteOne">
+ delete from user
+ <where>
+  <if test="id != 0">id = #{id}</if>
+  <if test="name != null">name = #{name}</if>
+  <if test="age != 0">age = #{age}</if>
+ </where>
+</delete>
+
+
+<resultMap type="cn.tedu.mybatis.beans.User" id="userRM">
+ <!-- 主键列必须声明，且要使用id标签声明 -->
+ <id column="uid" property="id"/>
+ <!--非主键类使用result标签声明，如果列名和beans的属性名相同，则不需要配置 -->
+ <result column="uage" property="age"/>
+</resultMap>
+<select id="queryByMapping" resultMap="userRM">
+ select id as uid,name,age as uage from user;
+</select>
+
+
+<resultMap type="cn.tedu.mybatis.beans.Grade" id="gradeRM">
+ <id column="gid" property="id"/>
+ <result column="gname" property="name"/>
+ <association property="room" javaType="cn.tedu.mybatis.beans.Room">
+ <id column="rid" property="id"/>
+ <result column="rname" property="name"/>
+ </association>
+</resultMap>
+<select id="queryo2o" resultMap="gradeRM">
+ select grade.id as gid,grade.name as gname,room.id as rid,room.name as rname 
+ from 
+ room,grade 
+ where grade.rid = room.id; 
+</select>
+
+<resultMap type="cn.tedu.mybatis.beans.Dept" id="deptRM">
+ <id column="did" property="id"/>
+ <result column="dname" property="name"/>
+ <collection property="empList" ofType="cn.tedu.mybatis.beans.Emp">
+  <id column="eid" property="id"/>
+  <result column="ename" property="name"/>
+ </collection>
+</resultMap>
+<select id="queryo2m" resultMap="deptRM">
+ select 
+ dept.id as did,
+ dept.name as dname,
+ emp.id as eid,
+ emp.name as ename
+ from 
+ dept inner join emp on dept.id = emp.deptid;
+</select>
+<resultMap type="cn.tedu.mybatis.beans.Teacher" id="teacherRM">
+ <id column="tid" property="id"/>
+ <result column="tname" property="name"/>
+ <collection property="stuList" ofType="cn.tedu.mybatis.beans.Stu">
+  <id column="sid" property="id"/>
+  <result column="sname" property="name"/>
+ </collection>
+</resultMap>
+<select id="queryo2T" resultMap="teacherRM">
+ select 
+ teacher.id as tid,
+ teacher.name as tname,
+ stu.id as sid,
+ stu.name as sname
+ from 
+ stu,teacher,stu_teacher 
+ where 
+   stu.id = stu_teacher.sid and
+   teacher.id = stu_teacher.tid;
+</select>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 </mapper>	
